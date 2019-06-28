@@ -1,13 +1,35 @@
 import { bindActionCreators } from "redux";
+import { 
+    TRAER_TODOS_LOS_USUARIOS,
+    ESTADO_CARGANDO,
+    ERROR_REQUEST
+ } from '../types/usuariosTypes';
 
 const INITIAL_STATE = {
-    usuarios: []
+    usuarios: [],
+    loading: false,
+    error: ''
 }
 
 export default (state = INITIAL_STATE, action) => {
     switch(action.type) {
-        case 'TRAER_TODOS_USUARIOS':
-            return { ...state, usuarios: action.payload }
-            default: return state;
+        case TRAER_TODOS_LOS_USUARIOS:
+            return { 
+                ...state,
+                 usuarios: action.payload,
+                 loading: false
+            }
+        case ESTADO_CARGANDO:
+            return { 
+                ...state, 
+                loading: true 
+            }
+        case ERROR_REQUEST:
+            return { 
+                ...state,
+                error: action.payload,
+                loading: false
+            }
+        default: return state;
     }
 }

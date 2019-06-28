@@ -1,6 +1,7 @@
 import React, {Fragment, Component} from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
+import  * as traerTodos   from '../../actions/usuariosActions';
+import Spinner from '../helpers/Spinner';
 
 class Usuarios extends Component {
 
@@ -12,19 +13,36 @@ class Usuarios extends Component {
     }
   }
 
-  async componentDidMount (){
+  componentDidMount (){
+    this.props.traerTodosLosUsuarios();
+  }
 
-    // llamada axios 
-    const usuariosApi = await axios.get('https://jsonplaceholder.typicode.com/users');
-    console.log("usuarios api:: ", usuariosApi);
+  ponerContenidoTabla = () => {
 
-    this.setState({
-      usuarios: usuariosApi.data
-    })
+    if (this.props.loading) {
+      return (
+        <Spinner />
+      );
+    }
+
+    return(
+      <table className="table table-inverse mt-4">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Website</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        { this.contenidoFilasTabla() }
+      </tbody>
+    </table>
+    );
   }
 
   contenidoFilasTabla = () => (
-    this.state.usuarios.map((user) => (
+    this.props.usuarios.map((user) => (
       <tr key={user.id}>
         <td>{user.name}</td>
         <td>{user.website}</td>
@@ -33,25 +51,13 @@ class Usuarios extends Component {
     )) 
   );
 
-
   render() {
 
     console.log("props ::: ", this.props)
 
     return (
       <div className="j-container container">
-        <table className="table table-inverse mt-4">
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Website</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            { this.contenidoFilasTabla() }
-          </tbody>
-        </table>
+        { this.ponerContenidoTabla() }
       </div>
     );    
   }
@@ -61,4 +67,4 @@ const mapStateToProps = (reducers) => {
     return reducers.usuariosReducer
 }
 
-export default connect(mapStateToProps, { /* actions */ })(Usuarios);
+export default connect(mapStateToProps,  traerTodos )(Usuarios);
